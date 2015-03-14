@@ -1,1 +1,1 @@
-# mycms
+# cms
