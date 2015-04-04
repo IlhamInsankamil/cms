@@ -6,6 +6,7 @@ class CmsWidget extends CmsBase{
 
 	var $widgetPath='';
 	var $widgetName='';
+	var $parameters = array();
 
 	function setWidgetPath($widgetName){
 		$this->widgetPath='widgets/'.$widgetName.'/';
@@ -20,7 +21,8 @@ class CmsWidget extends CmsBase{
 		echo "this will be default output of widget";
 	}
 
-	function run($widgetName){
+	function run($widgetName, $params){
+		$this->parameters = $params;
 		$this->setWidgetPath($widgetName);
 		$this->display();
 	}

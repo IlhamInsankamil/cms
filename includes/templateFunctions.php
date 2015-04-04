@@ -20,28 +20,36 @@ class TemplateFunctions extends CmsBase{
 	}
 
 	function appOutput(){
-		require_once('includes/cmsApplication.php');
-		$app = new CmsApplication();
+		$appname = (isset($_REQUEST['app']))?$_REQUEST['app']:'default';
+		require_once('apps/'.$appname.'/'.$appname.'.php');
+		$application = ucfirst($appname).'Application';
+		$app = new $application();
 		$app->run();
 	}
 
 	function widgetOutput($position='default'){
 			if (!empty($this->widgetPosition[$position])){
 				$widgets=$this->widgetPosition[$position];
-				foreach ($widgets as $widgetName) {
+				foreach ($widgets as $widgetObject) {
+					$widgetName = $widgetObject->name;
+					$widgetParameters = $widgetObject->parameters;
 					require_once('widgets/'.$widgetName.'/'.$widgetName.'.php');
 					$widgetclass=ucfirst($widgetName).'Widget';
 					$widget=new $widgetclass();
-					$widget->run($widgetName);
+					$widget->run($widgetName,$widgetParameters);
 				}
 			}
 	}
 
-	function setWidget($position,$widgetName){
+	function setWidget($position,$widgetName, $params=array()){
+		$widget = new StdClass;
+		$widget->name=$widgetName;
+		$widget->parameters=$params;
+
 		if (empty($this->widgetPosition[$position])){
-			$this->widgetPosition[$position]=array($widgetName);
+			$this->widgetPosition[$position]=array($widget);
 		} else {
-			array_push($this->widgetPosition[$position], $widgetName);
+			array_push($this->widgetPosition[$position], $widget);
 		}
 	}
 
